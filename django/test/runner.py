@@ -253,6 +253,7 @@ def partition_suite(suite, classes, bins):
 def setup_databases(verbosity, interactive, **kwargs):
     from django.db import connections, DEFAULT_DB_ALIAS
 
+    schema = settings.DATABASES['default'].get("SCHEMA")
     # First pass -- work out which databases actually need to be created,
     # and which ones are test mirrors or duplicate entries in DATABASES
     mirrored_aliases = {}
@@ -297,6 +298,7 @@ def setup_databases(verbosity, interactive, **kwargs):
                     verbosity,
                     autoclobber=not interactive,
                     serialize=connection.settings_dict.get("TEST_SERIALIZE", True),
+                    schema=schema,
                 )
                 destroy = True
             else:
