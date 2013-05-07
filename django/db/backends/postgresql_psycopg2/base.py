@@ -76,6 +76,11 @@ class DatabaseWrapper(BaseDatabaseWrapper):
     def __init__(self, *args, **kwargs):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
 
+        if self.settings_dict.get('SCHEMA'):
+            self.settings_dict["OPTIONS"]["options"] = self.settings_dict["OPTIONS"].get("options", "") \
+                + " -c search_path=" \
+                + self.settings_dict.get('SCHEMA').strip()
+
         opts = self.settings_dict["OPTIONS"]
         RC = psycopg2.extensions.ISOLATION_LEVEL_READ_COMMITTED
         self.isolation_level = opts.get('isolation_level', RC)
