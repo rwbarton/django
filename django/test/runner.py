@@ -294,11 +294,15 @@ def setup_databases(verbosity, interactive, **kwargs):
         for alias in aliases:
             connection = connections[alias]
             if test_db_name is None:
+                if signature.count("django.db.backends.dummy"):
+                    schema_args = {}
+                else:
+                    schema_args = {'schema': schema}
                 test_db_name = connection.creation.create_test_db(
                     verbosity,
                     autoclobber=not interactive,
                     serialize=connection.settings_dict.get("TEST_SERIALIZE", True),
-                    schema=schema,
+                    **schema_args
                 )
                 destroy = True
             else:
